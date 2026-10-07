@@ -88,7 +88,7 @@ Push site changes to `main`; Cloudflare Pages deploys independently from applica
 
 ## Current publication status
 
-The local site and installer are implemented and committed. GitHub repository creation/push is currently blocked by remote internal errors; `GavinGeizer/swarmforge-site` is the intended repository and was confirmed absent after attempted creation. Cloudflare deployment and the first public binary release are still pending. See PLAN.md for the exact resume steps. Do not advertise the public install command until both are live.
+The Astro site is published at https://github.com/GavinGeizer/swarmforge-site and its build/syntax CI passes. The first application binary release is prepared as a draft for owner review; it must be published before the installer can download it. Cloudflare Pages account connection, domain attachment and HTTPS provisioning remain to be completed using the settings above. See PLAN.md for the release link and deployment checklist.
 
 ## Framework support
 

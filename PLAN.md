@@ -21,9 +21,9 @@ Independent repository at /home/overlord/swarmforge-site. Cloudflare Pages build
 - [x] Static syntax checks and website CI
 - [x] Application release workflow emits verified external archive checksum
 - [x] Independent local Git history
-- [ ] Create and push GitHub website repository
+- [x] Create and push GitHub website repository
 - [x] Build and verify release archive plus external checksum
-- [ ] Prepare first GitHub draft release for review
+- [x] Prepare first GitHub draft release for review
 - [x] Document precise Cloudflare deployment settings and remaining user steps
 
 ## Progress
@@ -36,18 +36,18 @@ Independent repository at /home/overlord/swarmforge-site. Cloudflare Pages build
 
 ## Publication status
 
-Local implementation and static/build checks are complete. GitHub publication is blocked by server errors: `gh repo create` twice returned GraphQL internal errors; the REST create fallback returned an empty/invalid response; a subsequent repository lookup confirms the website repo still does not exist. Application `git push origin master` twice returned remote Internal Server Error; origin/master remains at a9493b1. No release has been published or drafted. GitHub's public status page currently says operational, so no global outage is asserted.
+The website repository is now published: https://github.com/GavinGeizer/swarmforge-site . Astro feature commit e9c397a passed its GitHub build/syntax workflow: https://github.com/GavinGeizer/swarmforge-site/actions/runs/37643769258 . Earlier GitHub write errors are resolved; application origin/master now includes release-checksum workflow and Astro deployment docs through 54cba5b.
 
-Application commit: 0233a48 (external archive checksum workflow and website deployment docs). Global binary rebuilt/installed from that commit; running service left unchanged. Verified package: /home/overlord/swarmforge/dist/swarmforge-v0.1.0-linux-x64-glibc.tar.gz, plus .sha256, SHA256SUMS and metadata-0.1.0.json. Installer/runtime behavior was reviewed but not executed end-to-end; no local tests were added or run.
+The first binary release has been prepared as a draft: https://github.com/GavinGeizer/swarmforge-oss/releases/tag/untagged-6474083e849e7e5d7f55 . It contains version 0.1.0 built from application commit 0233a48, with the verified archive, external archive checksum, internal binary checksum, and build metadata. It has not been publicly published. Application CI for 54cba5b is tracked at https://github.com/GavinGeizer/swarmforge-oss/actions/runs/37643735699 .
 
-### Resume publication after GitHub writes work
+### Remaining deployment actions
 
-1. From the application checkout: `git push origin master`.
-2. From the website checkout: `gh repo create GavinGeizer/swarmforge-site --public --source . --remote origin --push` (first check that an earlier attempt has not created it).
-3. Review the application CI. Create/push a matching v0.1.0 release tag to run the existing release workflow and create its verified draft, or upload the locally verified assets as a draft targeting application commit 0233a48.
-4. Review and explicitly publish the draft. Publishing is not automatic.
-5. Connect Cloudflare Pages using the exact README settings, then attach getswarmforge.tech through the project's Custom domains.
-6. Only after a stable release and Pages deployment exist, advertise the public curl command. Confirm script headers and download behavior before promoting it.
+1. Review and explicitly publish the draft binary release. Public installation needs a stable published release; draft assets are not available to unauthenticated users.
+2. Connect Cloudflare Pages to GavinGeizer/swarmforge-site, production branch main, framework Astro, build command npm run build, output directory dist, Node version 24.
+3. Attach getswarmforge.tech through the Pages project's Custom domains and complete HTTPS provisioning.
+4. Confirm the public script response and install flow before promoting the curl command. The installer was reviewed and syntax-checked, but was not executed end-to-end against a public release.
+
+No provider/model endpoint was contacted and no running service was restarted. Earlier application working-tree skill/research edits remain preserved.
 
 ## Framework migration — requested by user
 
@@ -57,6 +57,6 @@ Application commit: 0233a48 (external archive checksum workflow and website depl
 - [x] Kept public/install and public/_headers unchanged; compiled output copies both byte-for-byte.
 - [x] Production Astro build and Bash/JavaScript syntax checks pass; no test suite was added or run.
 - [x] Updated Cloudflare settings and CI to Astro / npm run build / dist.
-- GitHub publication and Cloudflare account connection remain separate outstanding deployment steps; their earlier failures are recorded above.
+- GitHub publication is complete. Cloudflare account connection and public binary release publication remain owner actions described above.
 
 - Framework review: no important issue in deployment settings, route output, CSP or copied installer. Reviewer found the documented Node minimum did not cover a locked dependency's newer minimum; the project now explicitly requires Node 24, matching CI/Cloudflare. The 404 header's workflow link now returns to the homepage section.
