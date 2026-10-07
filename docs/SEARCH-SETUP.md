@@ -55,6 +55,6 @@ The public content is static HTML with normal links and independently understand
 
 ## 6. Project identity and maintenance
 
-Choose and publish a license in the application repository before describing it as licensed open source or adding license JSON-LD. Keep exact provider/backend requirements visible. Update source references and FAQ whenever native runtimes, local VM support, per-worker repository/model selection or release availability change.
+The application now uses PolyForm Small Business License 1.0.0 at its repository root; JSON-LD links the official terms. Keep source-available wording: this standard is not OSI-approved open source. Business eligibility uses fewer than 100 employees and contractors and the prior-tax-year, inflation-adjusted revenue threshold—not the superseded 10-employee draft or a fixed current-year US$1-million figure. Keep exact provider/backend requirements visible. Update source references and FAQ whenever native runtimes, local VM support, per-worker repository/model selection or release availability change.
 
 Record baseline queries, impressions/clicks and referrals after deployment, then assess trends after recrawling. Check actual mobile Core Web Vitals in Search Console rather than treating source-level performance observations as field measurements.

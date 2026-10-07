@@ -129,6 +129,6 @@ Cloudflare documents Astro deployments with `npm run build` and `dist`: https://
 
 ## Search, retrieval and content maintenance
 
-The site uses Astro's official sitemap integration: submit `/sitemap-index.xml`; `/sitemap.xml` redirects there. Error pages and non-HTML endpoints are omitted. Titles, descriptions, canonical URLs, Open Graph/social cards, breadcrumbs and JSON-LD come from the shared layout. Source is public, but there is no published application license yet; no SPDX license or licensed-open-source claim is fabricated.
+The site uses Astro's official sitemap integration: submit `/sitemap-index.xml`; `/sitemap.xml` redirects there. Error pages and non-HTML endpoints are omitted. Titles, descriptions, canonical URLs, Open Graph/social cards, breadcrumbs and JSON-LD come from the shared layout. Application source uses PolyForm Small Business License 1.0.0 (`PolyForm-Small-Business-1.0.0`); the entity metadata links the official terms. This is source-available rather than OSI-approved open source. The application's authoritative license file is at its repository root.
 
 `/llms.txt` and `/llms-full.txt` are generated from the same published content, with current integration limits and benchmark status. They are supplementary navigation files, not an indexing guarantee. Follow [search setup](docs/SEARCH-SETUP.md) after deploying and [content maintenance](docs/CONTENT-GUIDE.md) when changing features or publishing evidence. IndexNow is optional, requires a build-time `INDEXNOW_KEY`, and never submits unless explicitly invoked with `--submit`.

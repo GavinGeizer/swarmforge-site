@@ -18,6 +18,7 @@ export const applicationSchema = {
   programmingLanguage: "TypeScript",
   url: `${site.url}/`,
   codeRepository: site.repository,
+  license: "https://polyformproject.org/licenses/small-business/1.0.0",
 };
 export const websiteSchema = {
   "@type": "WebSite",

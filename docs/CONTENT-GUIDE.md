@@ -29,7 +29,7 @@ Link every results article from the benchmark methodology page. Compare products
 
 ## Metadata and verification
 
-All pages use `SiteLayout.astro`; extend it rather than adding a second SEO plugin. Project constants and entity JSON-LD are in `src/lib/site.ts`. FAQ visible content and structured answers share `src/lib/faq.ts`. License, ratings, offers, unsupported creator/organization and unsupported integrations are intentionally absent.
+All pages use `SiteLayout.astro`; extend it rather than adding a second SEO plugin. Project constants and entity JSON-LD are in `src/lib/site.ts`. FAQ visible content and structured answers share `src/lib/faq.ts`. The application license field links the official PolyForm Small Business 1.0.0 terms. Ratings, offers, unsupported creator/organization and unsupported integrations are intentionally absent.
 
 The social card is checked-in PNG plus its editable SVG source, not a runtime image request. After changing the SVG, regenerate a 1200×630 PNG and run the tests. No browser downloads of fonts, social scripts or analytics are required.
 

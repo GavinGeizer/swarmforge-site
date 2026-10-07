@@ -87,12 +87,13 @@ test("FAQ structured answers match visible questions and answers", () => {
   const visible = decode(html.replace(/<script\b[^>]*>.*?<\/script>/gs, "").replace(/<[^>]*>/g, ""));
   for (const question of faq.mainEntity) { assert.ok(visible.includes(question.name)); assert.ok(visible.includes(question.acceptedAnswer.text)); }
 });
-test("Software entity has verified repository and no invented license or reviews", () => {
+test("Software entity has verified repository/license and no invented reviews", () => {
   const graph = JSON.parse(pages.get("/").match(/<script type="application\/ld\+json"[^>]*>(.*?)<\/script>/s)[1]);
   const app = graph["@graph"].find(node => Array.isArray(node["@type"]) && node["@type"].includes("SoftwareApplication"));
   assert.ok(app["@type"].includes("SoftwareSourceCode"));
   assert.equal(app.codeRepository, "https://github.com/GavinGeizer/swarmforge-oss");
-  for (const property of ["license", "aggregateRating", "review", "offers", "creator"]) assert.equal(app[property], undefined);
+  assert.equal(app.license, "https://polyformproject.org/licenses/small-business/1.0.0");
+  for (const property of ["aggregateRating", "review", "offers", "creator"]) assert.equal(app[property], undefined);
 });
 test("Crawler policy explicitly allows search without changing training policy", async () => {
   const robots = await readFile(join(dist, "robots.txt"), "utf8");
@@ -105,7 +106,7 @@ test("Machine-readable navigation and reference match published concept pages", 
   const nav = await readFile(join(dist, "llms.txt"), "utf8");
   const full = await readFile(join(dist, "llms-full.txt"), "utf8");
   assert.match(nav, /No original orchestration benchmark results/);
-  assert.match(nav, /no license has been published/i);
+  assert.match(nav, /PolyForm-Small-Business-1.0.0/);
   for (const match of nav.matchAll(/\]\((https:\/\/getswarmforge.tech[^)]+)\)/g)) {
     const url = new URL(match[1]);
     assert.ok(pages.has(url.pathname) || url.pathname === "/llms-full.txt", `Unknown LLM link ${url}`);

@@ -111,3 +111,9 @@ The original hero explained workspaces without naming orchestration; a factual s
 - `src/pages/llms.txt.ts`
 - `src/pages/use-cases/index.astro`
 - `src/styles/site.css`
+
+## Licensing follow-up — 2026-10-07
+
+After the SEO pass, the owner selected the unmodified PolyForm Small Business License 1.0.0 instead of an unpublished custom draft. The application repository root now contains the authoritative LICENSE and its package metadata records `PolyForm-Small-Business-1.0.0`. Website FAQ, llms navigation, entity metadata and current maintenance notes now identify the license. Earlier no-license findings above describe the initial audit state.
+
+The standard requires fewer than 100 employees and independent contractors and prior-tax-year revenue below US$1,000,000 in 2019 dollars, adjusted for inflation. Both conditions apply and the company definition includes affiliates. It contains no separate hosted-service prohibition. Source-available wording remains appropriate; no OSI-open-source claim or invented current-dollar threshold was added.
