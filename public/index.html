@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SwarmForge — Give every agent a workspace.</title>
+  <meta name="description" content="Coordinate coding agents in isolated virtual machines. Track their work, preserve their outputs, and bring results back to your project.">
+  <meta name="theme-color" content="#f5f4ef">
+  <link rel="canonical" href="https://getswarmforge.tech/">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script src="/assets/site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header wrap">
+    <a class="brand" href="/" aria-label="SwarmForge home"><span class="brand-mark" aria-hidden="true">SF</span> SwarmForge</a>
+    <nav aria-label="Main navigation"><a href="#how-it-works">How it works</a><a href="/docs/">Docs</a><a href="https://github.com/GavinGeizer/swarmforge-oss">GitHub <span aria-hidden="true">↗</span></a></nav>
+  </header>
+  <main id="main">
+    <section class="hero wrap">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="live-dot" aria-hidden="true"></span> OPEN SOURCE AGENT INFRASTRUCTURE</p>
+        <h1>Give every agent<br>a workspace.<br><span>Keep the whole<br>team in view.</span></h1>
+        <p class="intro">Run coding agents in isolated virtual machines. Coordinate their tasks, see their progress, and bring the results back to your project.</p>
+        <div class="hero-actions"><a class="button" href="/docs/#install">Get started <span aria-hidden="true">→</span></a><a class="text-link" href="https://github.com/GavinGeizer/swarmforge-oss">Explore the source <span aria-hidden="true">↗</span></a></div>
+        <p class="small muted">Self-hosted control plane · Linux x64 · MCP interface</p>
+      </div>
+      <div class="hero-visual">
+        <div class="workspace-card">
+          <div class="window-bar"><span class="window-dots" aria-hidden="true">● ● ●</span><span>swarmforge status</span><span class="connection">● connected</span></div>
+          <div class="console-content">
+            <div class="console-heading"><span>TEAM / CHECKOUT FLOW</span><span>03 workers</span></div>
+            <div class="worker-row"><span class="worker-symbol cyan">●</span><div><strong>Implement checkout</strong><small>coder · isolated workspace</small></div><span class="state running">RUNNING</span></div>
+            <div class="console-activity">Reading the existing payment flow…</div>
+            <div class="worker-row"><span class="worker-symbol amber">◉</span><div><strong>Review edge cases</strong><small>reviewer · follow-up ready</small></div><span class="state waiting">WAITING</span></div>
+            <div class="worker-row"><span class="worker-symbol green">✓</span><div><strong>Document the API</strong><small>writer · outputs preserved</small></div><span class="state completed">COMPLETE</span></div>
+            <div class="console-result"><span>OUTPUTS</span><div>review.md <b>SHA-256 verified</b></div><div>change-summary.md <b>preserved</b></div></div>
+            <div class="console-footer">↑/↓ select &nbsp; Enter inspect &nbsp; a artifacts &nbsp; n notifications</div>
+          </div>
+        </div>
+        <p class="illustration-label">Illustrative task view. See the CLI for your actual workers and results.</p>
+        <div class="float-note"><span aria-hidden="true">↳</span><div><strong>Work survives the workspace.</strong><small>Preserve deliverables before VM cleanup.</small></div></div>
+      </div>
+    </section>
+    <section class="install-strip wrap" aria-labelledby="install-heading">
+      <div><p class="eyebrow">START IN YOUR TERMINAL</p><h2 id="install-heading">One command. Your infrastructure.</h2><p>Install the CLI, configure your providers, and check local readiness.</p></div>
+      <div class="command-container"><div class="command"><code id="install-command">curl -fsSL https://getswarmforge.tech/install | bash</code><button class="copy-button" type="button" data-copy="install-command" aria-label="Copy installation command">Copy</button></div><p class="small muted">Requires Linux x64 with glibc and configured VM/model providers. <a href="/install">Inspect the script</a>.</p><p class="copy-status" role="status" aria-live="polite"></p></div>
+    </section>
+    <section class="section wrap" id="how-it-works" aria-labelledby="workflow-heading">
+      <div class="section-heading"><p class="eyebrow">FROM ASSIGNMENT TO HANDOFF</p><h2 id="workflow-heading">A clear path through<br>parallel work.</h2><p>Agents get room to work. You get the controls to understand what happened.</p></div>
+      <div class="steps-grid">
+        <article class="step"><span class="step-number">01 / ASSIGN</span><h3>Give the task a home.</h3><p>Queue a worker through MCP with its task, instructions, timeout, and expected deliverables. Each worker runs in an isolated VM.</p></article>
+        <article class="step"><span class="step-number">02 / OBSERVE</span><h3>See work as it moves.</h3><p>Inspect response activity, results, reported test outcomes, and measured token usage. Find workers with dashboard search and filters.</p></article>
+        <article class="step"><span class="step-number">03 / COLLECT</span><h3>Keep what matters.</h3><p>Preserve artifacts, download them with checksum verification, inspect Git handoffs, and clean up eligible retained VMs.</p></article>
+      </div>
+    </section>
+    <section class="feature-section" aria-labelledby="features-heading"><div class="wrap feature-grid">
+      <div><p class="eyebrow">BUILT FOR THE OPERATOR</p><h2 id="features-heading">Control you can<br>actually use.</h2><p>SwarmForge connects your existing tools through a durable control plane you run yourself.</p><a class="text-link" href="/docs/">Read the setup guide <span aria-hidden="true">→</span></a></div>
+      <div class="feature-list">
+        <article><span aria-hidden="true">↗</span><div><h3>MCP-native coordination</h3><p>Spawn workers, send follow-up messages, and inspect results from an MCP client.</p></div></article>
+        <article><span aria-hidden="true">▤</span><div><h3>Durable results and artifacts</h3><p>Read bounded text directly. Save complete files through authenticated, verified downloads.</p></div></article>
+        <article><span aria-hidden="true">◎</span><div><h3>Visible usage and cleanup</h3><p>Configure cost estimates and budget alerts. Preview retention policies before enabling automatic expiry.</p></div></article>
+        <article><span aria-hidden="true">↻</span><div><h3>Recovery with context</h3><p>Inspect failure guidance and preservation state, then choose the appropriate next action.</p></div></article>
+      </div>
+    </div></section>
+    <section class="section wrap closing"><p class="eyebrow">BUILD IN THE OPEN</p><h2>Your next agent team<br>starts with a task.</h2><p>Explore the code, try a real workflow, and help shape what comes next.</p><div class="hero-actions"><a class="button" href="/docs/">Set up SwarmForge <span aria-hidden="true">→</span></a><a class="text-link" href="https://github.com/GavinGeizer/swarmforge-oss/issues">Share feedback <span aria-hidden="true">↗</span></a></div></section>
+  </main>
+  <footer class="site-footer wrap"><a class="brand" href="/">SwarmForge</a><p>Isolated workspaces. Durable handoffs.</p><nav aria-label="Footer navigation"><a href="/docs/">Docs</a><a href="https://github.com/GavinGeizer/swarmforge-oss/releases">Releases</a><a href="https://github.com/GavinGeizer/swarmforge-site">Website source</a></nav></footer>
+</body>
+</html>

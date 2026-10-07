@@ -1,0 +1,16 @@
+name: Static checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  syntax:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Installer Bash syntax
+        run: bash -n public/install
+      - name: Browser JavaScript syntax
+        run: node --check public/assets/site.js

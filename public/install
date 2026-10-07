@@ -1,0 +1,201 @@
+#!/usr/bin/env bash
+# SwarmForge public installer. Source: github.com/GavinGeizer/swarmforge-site
+# Downloads only versioned release assets; configuration stays in the installed CLI.
+# Wrapped in main so an incomplete pipe cannot execute half an installer.
+main() {
+  set -euo pipefail
+  umask 077
+  local repository='GavinGeizer/swarmforge-oss'
+  local requested='' install_only=0 modify_path=1
+  local install_dir="${SWARMFORGE_INSTALL_DIR:-${HOME:?HOME must be set}/.local/bin}"
+  local temporary='' staged_binary='' tty_available=0
+  local version archive release_url digest actual types binary target checksum
+  local profile='' shell_name='' path_line='' quoted_dir='' choice='' config_path=''
+  local -a doctor_flags=()
+
+  say() { printf '%s\n' "$*"; }
+  fail() { printf 'SwarmForge installer: %s\n' "$*" >&2; exit 1; }
+  cleanup() {
+    if [[ -n "$staged_binary" ]]; then rm -f -- "$staged_binary"; fi
+    if [[ -n "$temporary" ]]; then rm -rf -- "$temporary"; fi
+  }
+  trap cleanup EXIT
+  trap 'exit 130' INT
+  trap 'exit 143' TERM
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --help|-h)
+        cat <<'HELP'
+SwarmForge installer
+Usage: bash install [--version VERSION] [--install-only] [--no-modify-path]
+
+  --version VERSION  Install a published stable MAJOR.MINOR.PATCH release.
+  --install-only     Install without configuration, live checks or server startup.
+  --no-modify-path   Leave shell files unchanged and print PATH instructions.
+
+SWARMFORGE_INSTALL_DIR overrides ~/.local/bin (absolute writable directory).
+Linux x64 with glibc is currently supported. No sudo, Bun or checkout required.
+Interactive setup writes private configuration in the current directory using
+swarmforge init. Existing configuration is preserved. Noninteractive installs
+never prompt. SHA-256 detects corruption; this installer does not verify a
+publisher signature. Read the script before execution if you want to inspect it.
+HELP
+        trap - EXIT INT TERM
+        return 0 ;;
+      --version)
+        [[ $# -ge 2 ]] || fail '--version requires MAJOR.MINOR.PATCH'
+        requested="${2#v}"; shift 2 ;;
+      --install-only) install_only=1; shift ;;
+      --no-modify-path) modify_path=0; shift ;;
+      *) fail "Unknown argument: $1 (see --help)" ;;
+    esac
+  done
+
+  if [[ -n "$requested" && ! "$requested" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
+    fail 'Version must be a stable MAJOR.MINOR.PATCH number'
+  fi
+  [[ "$install_dir" == /* && "$install_dir" != / && "$install_dir" != *:* && "$install_dir" != *\\* && ! "$install_dir" =~ [[:cntrl:]] ]] || fail 'Installation directory must be an absolute path without colons, backslashes or control characters'
+  [[ "$(id -u)" != 0 ]] || fail 'Run as your normal user; the installer does not need sudo'
+  [[ "$(uname -s)" == Linux && "$(uname -m)" == x86_64 ]] || fail 'Only Linux x64 with glibc is currently supported; see https://getswarmforge.tech/docs/'
+  command -v getconf >/dev/null 2>&1 && getconf GNU_LIBC_VERSION >/dev/null 2>&1 || fail 'This release requires glibc; Alpine/musl is not supported'
+  for tool in curl tar sha256sum mktemp install mv chmod mkdir awk sort cmp grep head wc id uname getconf; do
+    command -v "$tool" >/dev/null 2>&1 || fail "Missing prerequisite: $tool. Install it using your package manager and rerun."
+  done
+  tar --version 2>/dev/null | head -n 1 | grep -q 'GNU tar' || fail 'GNU tar is required to validate the release archive'
+  if { exec 3<>/dev/tty; } 2>/dev/null && [[ -t 3 ]]; then tty_available=1; fi
+  if [[ "$install_only" == 0 && "$tty_available" == 0 ]]; then
+    say 'No interactive terminal detected; installing only. Run swarmforge init later.'
+    install_only=1
+  fi
+  temporary="$(mktemp -d "${TMPDIR:-/tmp}/swarmforge-install.XXXXXXXX")"
+  chmod 700 "$temporary"
+
+  fetch_file() {
+    curl --proto '=https' --proto-redir '=https' --tlsv1.2 --fail --silent --show-error --location \
+      --connect-timeout 15 --max-time 180 --retry 2 --output "$2" "$1"
+  }
+  if [[ -n "$requested" ]]; then version="$requested";
+  else
+    # Resolve latest once, then pin all subsequent downloads to that release.
+    local resolved
+    resolved="$(curl --proto '=https' --proto-redir '=https' --tlsv1.2 --fail --silent --show-error --location \
+      --connect-timeout 15 --max-time 30 --output /dev/null --write-out '%{url_effective}' \
+      "https://github.com/$repository/releases/latest")" || fail 'No published stable release is available, or GitHub could not be reached. Check https://github.com/GavinGeizer/swarmforge-oss/releases'
+    [[ "$resolved" =~ ^https://github\.com/GavinGeizer/swarmforge-oss/releases/tag/v((0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*))$ ]] || fail 'Latest release did not resolve to an expected stable version'
+    version="${BASH_REMATCH[1]}"
+  fi
+  archive="swarmforge-v${version}-linux-x64-glibc.tar.gz"
+  release_url="https://github.com/$repository/releases/download/v$version"
+  say "Installing SwarmForge $version (Linux x64, glibc) into $install_dir"
+  fetch_file "$release_url/$archive.sha256" "$temporary/archive.sha256" || fail 'Release archive checksum is unavailable; no executable was changed'
+  [[ "$(wc -c < "$temporary/archive.sha256")" -lt 1024 ]] || fail 'Invalid archive checksum response'
+  digest="$(awk 'NR==1 {print $1}' "$temporary/archive.sha256")"
+  [[ "$digest" =~ ^[a-fA-F0-9]{64}$ ]] || fail 'Invalid archive checksum'
+  [[ "$(awk 'NR==1 {print $2}' "$temporary/archive.sha256")" == "$archive" && "$(awk 'END {print NR}' "$temporary/archive.sha256")" == 1 ]] || fail 'Archive checksum names an unexpected asset'
+  fetch_file "$release_url/$archive" "$temporary/$archive" || fail 'Release download failed; no executable was changed'
+  actual="$(sha256sum "$temporary/$archive" | awk '{print $1}')"
+  [[ "${actual,,}" == "${digest,,}" ]] || fail 'Archive checksum mismatch; no executable was changed'
+
+  # The package contract is exactly three top-level regular files, without duplicates.
+  printf '%s\n' SHA256SUMS "metadata-$version.json" swarmforge | LC_ALL=C sort > "$temporary/expected"
+  tar -tzf "$temporary/$archive" | LC_ALL=C sort > "$temporary/listing"
+  cmp -s "$temporary/expected" "$temporary/listing" || fail 'Archive contains unexpected paths or duplicate entries'
+  types="$(tar -tvzf "$temporary/$archive" | awk '{print substr($0,1,1)}')"
+  [[ "$types" == $'-\n-\n-' ]] || fail 'Archive contains non-regular files'
+  mkdir "$temporary/extracted"
+  tar --extract --gzip --file "$temporary/$archive" --directory "$temporary/extracted" --no-same-owner --no-same-permissions
+  binary="$temporary/extracted/swarmforge"
+  checksum="$(awk 'NR==1 {print $1}' "$temporary/extracted/SHA256SUMS")"
+  [[ "$checksum" =~ ^[a-fA-F0-9]{64}$ && "$(awk 'NR==1 {print $2}' "$temporary/extracted/SHA256SUMS")" == swarmforge && "$(awk 'END {print NR}' "$temporary/extracted/SHA256SUMS")" == 1 ]] || fail 'Invalid executable checksum manifest'
+  [[ "$(sha256sum "$binary" | awk '{print $1}')" == "${checksum,,}" ]] || fail 'Executable checksum mismatch'
+  chmod 755 "$binary"
+  [[ "$("$binary" --version)" == "$version" ]] || fail 'Executable version does not match the selected release'
+
+  mkdir -p -- "$install_dir"
+  [[ ! -L "$install_dir/swarmforge" ]] || fail 'Existing executable is a symlink; choose an installation directory or remove the link explicitly'
+  staged_binary="$(mktemp "$install_dir/.swarmforge-install.XXXXXXXX")"
+  install -m 755 "$binary" "$staged_binary"
+  mv -fT -- "$staged_binary" "$install_dir/swarmforge"
+  staged_binary=''
+  target="$install_dir/swarmforge"
+  export PATH="$install_dir:$PATH"
+  say "Installed $target; archive and executable SHA-256 verified."
+
+  # Quote for shell data; do not execute existing user shell configuration.
+  quoted_dir="'${install_dir//\'/\'\\\'\'}'"
+  shell_name="${SHELL:-}"
+  shell_name="${shell_name##*/}"
+  path_line="export PATH=$quoted_dir:\"\$PATH\""
+  case "$shell_name" in
+    bash) profile="$HOME/.bashrc"; path_line="export PATH=$quoted_dir:\"\$PATH\"" ;;
+    zsh)
+      if [[ -n "${ZDOTDIR:-}" && "${ZDOTDIR}" != /* ]]; then
+        modify_path=0; say 'Relative ZDOTDIR detected; add PATH to the shell profile you use.'
+      else profile="${ZDOTDIR:-$HOME}/.zshrc"; fi ;;
+    fish)
+      path_line="fish_add_path -- $quoted_dir"
+      if [[ -n "${XDG_CONFIG_HOME:-}" && "${XDG_CONFIG_HOME}" != /* ]]; then
+        modify_path=0; say 'Relative XDG_CONFIG_HOME detected; add PATH to the Fish configuration you use.'
+      else profile="${XDG_CONFIG_HOME:-$HOME/.config}/fish/config.fish"; fi ;;
+    *) modify_path=0 ;;
+  esac
+  if [[ "$modify_path" == 1 ]]; then
+    if [[ -L "$profile" ]]; then
+      say "Kept symlinked shell profile $profile unchanged."
+      say "Add to your shell profile: $path_line"
+    else
+      mkdir -p -- "${profile%/*}"
+      if [[ -f "$profile" ]] && grep -Fqx -- "$path_line" "$profile"; then
+        say "Kept existing SwarmForge PATH block in $profile."
+      else
+        printf '\n# SwarmForge installer PATH\n%s\n# End SwarmForge installer PATH\n' "$path_line" >> "$profile"
+        say "Added PATH configuration to $profile."
+      fi
+    fi
+  fi
+  if [[ -n "$profile" ]]; then
+    if [[ "$modify_path" == 0 ]]; then say "Add to your shell profile: $path_line"; fi
+    say "Open a new terminal to load your shell configuration.";
+  else say "Add to your shell configuration: $path_line"; say "Open a new terminal afterward."; fi
+  say 'In an editor workspace, reload the window and open a new terminal.'
+
+  if [[ "$install_only" == 0 ]]; then
+    config_path="$("$target" config path)"
+    if [[ -e "$PWD/.env" || -L "$PWD/.env" ]]; then
+      say 'Kept existing .env in this directory.'
+      doctor_flags=(--env-file "$PWD/.env")
+    elif [[ "$config_path" == *'"exists":true'* ]]; then
+      say 'Kept existing global configuration. Run swarmforge init in a new directory when you want another deployment.'
+    else
+      say 'Starting local configuration in the current directory; credentials are entered through SwarmForge init.'
+      "$target" init <&3 >&3 2>&3 || fail 'Configuration did not complete. The executable remains installed; rerun swarmforge init in a terminal.'
+      doctor_flags=(--env-file "$PWD/.env")
+    fi
+    if ! "$target" doctor "${doctor_flags[@]}"; then
+      say 'Local readiness needs attention. Fix the reported settings and run swarmforge doctor again.'
+      cleanup
+      trap - EXIT INT TERM
+      return 1
+    fi
+    printf 'Run optional live checks? This contacts providers and makes a small inference request. [y/N] ' >&3
+    IFS= read -r choice <&3 || choice=''
+    if [[ "$choice" == y || "$choice" == Y ]]; then
+      "$target" doctor "${doctor_flags[@]}" --live <&3 >&3 2>&3 || say 'Live readiness needs attention; inspect the reported failures before launching workers.'
+    fi
+    printf 'Start SwarmForge in this terminal now? Keep it open while using the server. [y/N] ' >&3
+    IFS= read -r choice <&3 || choice=''
+    if [[ "$choice" == y || "$choice" == Y ]]; then
+      cleanup
+      temporary=''
+      trap - EXIT INT TERM
+      exec "$target" serve "${doctor_flags[@]}" <&3 >&3 2>&3
+    fi
+  fi
+  say 'Next: swarmforge serve (add --env-file .env if using a local configuration)'
+  say 'Then, in another terminal: swarmforge status'
+  say 'Setup and MCP instructions: https://getswarmforge.tech/docs/'
+  cleanup
+  trap - EXIT INT TERM
+}
+main "$@"
