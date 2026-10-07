@@ -1,0 +1,12 @@
+---
+interface Props { active?: "home" | "docs"; }
+const { active = "home" } = Astro.props;
+---
+<header class="site-header wrap">
+  <a class="brand" href="/" aria-label="SwarmForge home"><span class="brand-mark" aria-hidden="true">SF</span> SwarmForge</a>
+  <nav aria-label="Main navigation">
+    {active === "docs" ? <a href="/">Home</a> : <a href="/#how-it-works">How it works</a>}
+    <a href="/docs/" aria-current={active === "docs" ? "page" : undefined}>Docs</a>
+    <a href="https://github.com/GavinGeizer/swarmforge-oss">GitHub <span aria-hidden="true">↗</span></a>
+  </nav>
+</header>

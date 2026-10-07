@@ -1,4 +1,4 @@
-name: Static checks
+name: Site build and syntax
 on:
   push:
     branches: [main]
@@ -6,11 +6,23 @@ on:
 permissions:
   contents: read
 jobs:
-  syntax:
+  build:
     runs-on: ubuntu-24.04
+    env:
+      ASTRO_TELEMETRY_DISABLED: '1'
     steps:
       - uses: actions/checkout@v4
-      - name: Installer Bash syntax
-        run: bash -n public/install
-      - name: Browser JavaScript syntax
-        run: node --check public/assets/site.js
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Install pinned dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Installer and browser script syntax
+        run: npm run check:syntax
+      - name: Build Astro site
+        run: npm run build
+      - name: Confirm public installer and headers are preserved
+        run: |
+          cmp public/install dist/install
+          cmp public/_headers dist/_headers

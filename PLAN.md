@@ -2,11 +2,11 @@
 
 ## Scope
 
-Independent repository at /home/overlord/swarmforge-site. Cloudflare Pages deploys only public/. The application repository remains GavinGeizer/swarmforge-oss; GitHub Releases hold versioned binaries. No real SwarmForge/provider/model endpoint calls, no service restarts, and no secret material in the site.
+Independent repository at /home/overlord/swarmforge-site. Cloudflare Pages builds Astro and deploys only dist/. The application repository remains GavinGeizer/swarmforge-oss; GitHub Releases hold versioned binaries. No real SwarmForge/provider/model endpoint calls, no service restarts, and no secret material in the site.
 
 ## Design
 
-- Static HTML/CSS/JavaScript; no framework, dependencies, or build tool needed by Cloudflare.
+- Astro 7.3.6 with static output; Node 24/npm build in Cloudflare, compiled HTML/CSS/browser JavaScript at runtime. Shared layouts and components keep navigation, metadata, footer and installation UI consistent.
 - Responsive public homepage, accessible command copying, clearly labeled illustrative dashboard, focused setup docs and deployment instructions.
 - Canonical Bash installer at public/install. Download a published stable release or requested vMAJOR.MINOR.PATCH; reject unsupported platforms and root execution.
 - Verify an external archive SHA-256 before extraction, check archive entry names/types, then verify the executable checksum/version. Same-directory temporary install and atomic rename preserve existing executable on failures.
@@ -48,3 +48,15 @@ Application commit: 0233a48 (external archive checksum workflow and website depl
 4. Review and explicitly publish the draft. Publishing is not automatic.
 5. Connect Cloudflare Pages using the exact README settings, then attach getswarmforge.tech through the project's Custom domains.
 6. Only after a stable release and Pages deployment exist, advertise the public curl command. Confirm script headers and download behavior before promoting it.
+
+## Framework migration — requested by user
+
+- [x] Verified Cloudflare framework support and its Astro build/output settings against official documentation.
+- [x] Migrated homepage, documentation and 404 into Astro routes; added reusable layout, header/footer, dashboard example and installation command components.
+- [x] Pinned Astro 7.3.6 and generated npm lockfile; selected Node 24 for builds.
+- [x] Kept public/install and public/_headers unchanged; compiled output copies both byte-for-byte.
+- [x] Production Astro build and Bash/JavaScript syntax checks pass; no test suite was added or run.
+- [x] Updated Cloudflare settings and CI to Astro / npm run build / dist.
+- GitHub publication and Cloudflare account connection remain separate outstanding deployment steps; their earlier failures are recorded above.
+
+- Framework review: no important issue in deployment settings, route output, CSP or copied installer. Reviewer found the documented Node minimum did not cover a locked dependency's newer minimum; the project now explicitly requires Node 24, matching CI/Cloudflare. The 404 header's workflow link now returns to the homepage section.

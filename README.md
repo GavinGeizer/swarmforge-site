@@ -1,25 +1,38 @@
 # SwarmForge website and installer
 
-Independent static website for https://getswarmforge.tech. Application source and binary releases live in [swarmforge-oss](https://github.com/GavinGeizer/swarmforge-oss).
+Independent Astro website for https://getswarmforge.tech. Application source and binary releases live in [swarmforge-oss](https://github.com/GavinGeizer/swarmforge-oss).
 
 ## Files
 
-- `public/index.html`: responsive landing page; the terminal task view is clearly illustrative.
-- `public/docs/index.html`: installation, configuration, MCP connection, first task and operator workflows.
+- `src/pages/index.astro`: responsive landing page; the terminal task view is clearly illustrative.
+- `src/pages/docs/index.astro`: installation, configuration, MCP connection, first task and operator workflows.
 - `public/install`: canonical public Bash installer. No copy is maintained in the application repo.
-- `public/assets/`: shared styles, clipboard enhancement and favicon. No external fonts, analytics or runtime dependencies.
+- `src/layouts/` and `src/components/`: shared page shell, navigation, footer, installer command and dashboard example.
+- `src/styles/site.css`: shared stylesheet, emitted as an external build asset to respect the site CSP.
+- `public/assets/`: clipboard enhancement and favicon. No external fonts or browser analytics.
+- `astro.config.mjs`: Astro 7.3.6 static output, canonical domain and trailing slashes. No server-side adapter or Cloudflare Functions is needed for this site.
+- `package-lock.json`: pinned dependency tree; Node 24 selected for CI/Cloudflare builds.
 - `public/_headers`: script content type/cache policy and site security headers for Cloudflare Pages.
 - `PLAN.md`: scope, implementation checklist and publication status.
 
-## Local preview
+## Local development and production build
 
-From this directory:
+Use Node 24 and npm 9.6.5 or newer. The project declares Node 24 as its minimum and uses it in CI/Cloudflare:
 
 ```bash
-python3 -m http.server 8080 --directory public
+npm ci
+npm run dev
 ```
 
-Open http://localhost:8080. Local Python hosting does not apply Cloudflare `_headers`; those headers are applied after Pages deployment. Installer syntax: `bash -n public/install`. JavaScript syntax: `node --check public/assets/site.js`.
+Open the local URL printed by Astro (normally http://127.0.0.1:4321). For a production build:
+
+```bash
+npm run check:syntax
+npm run build
+npm run preview
+```
+
+Astro generates `dist/`; do not edit or commit the generated directory. Pages builds from source on each production deployment. `public/install` and `public/_headers` are copied byte-for-byte into `dist/`. Local Astro preview does not apply Cloudflare `_headers`; Pages applies them after deployment.
 
 ## Cloudflare Pages settings
 
@@ -33,11 +46,11 @@ The domain has already been added to Cloudflare and registrar nameservers change
 | --- | --- |
 | Project name | `swarmforge-site` |
 | Production branch | `main` |
-| Framework preset | `None` |
-| Build command | `exit 0` |
-| Build output directory | `public` |
+| Framework preset | `Astro` |
+| Build command | `npm run build` |
+| Build output directory | `dist` |
 | Root directory | Repository root (leave default) |
-| Environment variables | None |
+| Build environment | `NODE_VERSION=24`; optionally `ASTRO_TELEMETRY_DISABLED=1` |
 
 4. Deploy and review the `*.pages.dev` preview.
 5. Project → Custom domains → Set up a custom domain → `getswarmforge.tech`.
@@ -71,8 +84,12 @@ Interactive onboarding reads `/dev/tty`. Noninteractive runs automatically insta
 
 ## Updates
 
-Push site changes to `main`; Cloudflare Pages deploys independently from application releases. Update installation documentation if the application release contract or CLI changes. Keep the installer URL stable. GitHub CI checks Bash/JavaScript syntax; it does not execute the installer against real providers or users' configuration.
+Push site changes to `main`; Cloudflare Pages deploys independently from application releases. Update installation documentation if the application release contract or CLI changes. Keep the installer URL stable. GitHub CI installs dependencies with `npm ci`, checks Bash/JavaScript syntax, builds Astro and confirms the installer/header files are preserved; it does not execute the installer against real providers or users' configuration.
 
 ## Current publication status
 
 The local site and installer are implemented and committed. GitHub repository creation/push is currently blocked by remote internal errors; `GavinGeizer/swarmforge-site` is the intended repository and was confirmed absent after attempted creation. Cloudflare deployment and the first public binary release are still pending. See PLAN.md for the exact resume steps. Do not advertise the public install command until both are live.
+
+## Framework support
+
+Cloudflare documents Astro deployments with `npm run build` and `dist`: https://developers.cloudflare.com/pages/framework-guides/deploy-an-astro-site/ . This project prerenders its pages into static HTML; the installer is a public asset rather than an Astro route or server function. Astro's documented public directory behavior preserves these assets unchanged: https://docs.astro.build/en/basics/project-structure/#public .
