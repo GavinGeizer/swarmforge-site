@@ -107,7 +107,7 @@ A published stable release is required for public installation. Draft releases c
 ```bash
 curl -fsSL https://getswarmforge.tech/install | bash
 curl -fsSL https://getswarmforge.tech/install | bash -s -- --install-only
-curl -fsSL https://getswarmforge.tech/install | bash -s -- --version 0.1.1 --install-only
+curl -fsSL https://getswarmforge.tech/install | bash -s -- --version 0.1.2 --install-only
 curl -fsSL https://getswarmforge.tech/install | bash -s -- --no-modify-path
 ```
 
