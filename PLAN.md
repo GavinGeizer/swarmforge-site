@@ -20,9 +20,11 @@ Independent repository at /home/overlord/swarmforge-site. Cloudflare Pages deplo
 - [x] Homepage and setup docs
 - [x] Static syntax checks and website CI
 - [x] Application release workflow emits verified external archive checksum
-- [ ] Independent local Git history and GitHub repository
-- [ ] Build release assets and prepare first draft release for review
-- [ ] Document precise Cloudflare deployment settings and remaining user steps
+- [x] Independent local Git history
+- [ ] Create and push GitHub website repository
+- [x] Build and verify release archive plus external checksum
+- [ ] Prepare first GitHub draft release for review
+- [x] Document precise Cloudflare deployment settings and remaining user steps
 
 ## Progress
 
@@ -31,3 +33,18 @@ Independent repository at /home/overlord/swarmforge-site. Cloudflare Pages deplo
 
 - Static checks: Bash parser and browser JavaScript parser/compiler pass. Application TypeScript/Biome checks pass. No new tests or local test suite execution. Installer has not been run against a real release or provider.
 - Independent native read-only review found two PATH issues: colon-containing install directories and custom Zsh/Fish configuration roots. Fixed by rejecting invalid PATH components and honoring absolute ZDOTDIR/XDG_CONFIG_HOME, with manual guidance for relative roots. Archive/checksum/release contract aligns; no further important issues identified by inspection.
+
+## Publication status
+
+Local implementation and static/build checks are complete. GitHub publication is blocked by server errors: `gh repo create` twice returned GraphQL internal errors; the REST create fallback returned an empty/invalid response; a subsequent repository lookup confirms the website repo still does not exist. Application `git push origin master` twice returned remote Internal Server Error; origin/master remains at a9493b1. No release has been published or drafted. GitHub's public status page currently says operational, so no global outage is asserted.
+
+Application commit: 0233a48 (external archive checksum workflow and website deployment docs). Global binary rebuilt/installed from that commit; running service left unchanged. Verified package: /home/overlord/swarmforge/dist/swarmforge-v0.1.0-linux-x64-glibc.tar.gz, plus .sha256, SHA256SUMS and metadata-0.1.0.json. Installer/runtime behavior was reviewed but not executed end-to-end; no local tests were added or run.
+
+### Resume publication after GitHub writes work
+
+1. From the application checkout: `git push origin master`.
+2. From the website checkout: `gh repo create GavinGeizer/swarmforge-site --public --source . --remote origin --push` (first check that an earlier attempt has not created it).
+3. Review the application CI. Create/push a matching v0.1.0 release tag to run the existing release workflow and create its verified draft, or upload the locally verified assets as a draft targeting application commit 0233a48.
+4. Review and explicitly publish the draft. Publishing is not automatic.
+5. Connect Cloudflare Pages using the exact README settings, then attach getswarmforge.tech through the project's Custom domains.
+6. Only after a stable release and Pages deployment exist, advertise the public curl command. Confirm script headers and download behavior before promoting it.

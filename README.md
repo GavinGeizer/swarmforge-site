@@ -72,3 +72,7 @@ Interactive onboarding reads `/dev/tty`. Noninteractive runs automatically insta
 ## Updates
 
 Push site changes to `main`; Cloudflare Pages deploys independently from application releases. Update installation documentation if the application release contract or CLI changes. Keep the installer URL stable. GitHub CI checks Bash/JavaScript syntax; it does not execute the installer against real providers or users' configuration.
+
+## Current publication status
+
+The local site and installer are implemented and committed. GitHub repository creation/push is currently blocked by remote internal errors; `GavinGeizer/swarmforge-site` is the intended repository and was confirmed absent after attempted creation. Cloudflare deployment and the first public binary release are still pending. See PLAN.md for the exact resume steps. Do not advertise the public install command until both are live.
