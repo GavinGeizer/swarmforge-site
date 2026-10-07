@@ -38,7 +38,7 @@ Independent repository at /home/overlord/swarmforge-site. Cloudflare Pages build
 
 The website repository is now published: https://github.com/GavinGeizer/swarmforge-site . Astro feature commit e9c397a passed its GitHub build/syntax workflow: https://github.com/GavinGeizer/swarmforge-site/actions/runs/37643769258 . Earlier GitHub write errors are resolved; application origin/master now includes release-checksum workflow and Astro deployment docs through 54cba5b.
 
-The first binary release has been prepared as a draft: https://github.com/GavinGeizer/swarmforge-oss/releases/tag/untagged-6474083e849e7e5d7f55 . It contains version 0.1.0 built from application commit 0233a48, with the verified archive, external archive checksum, internal binary checksum, and build metadata. It has not been publicly published. Application CI for 54cba5b is tracked at https://github.com/GavinGeizer/swarmforge-oss/actions/runs/37643735699 .
+The first binary release has been prepared as a draft: https://github.com/GavinGeizer/swarmforge-oss/releases (the v0.1.0 draft) . It contains version 0.1.0 built from application commit 0233a48, with the verified archive, external archive checksum, internal binary checksum, and build metadata. It has not been publicly published. Application CI for 54cba5b passed at https://github.com/GavinGeizer/swarmforge-oss/actions/runs/37643735699 .
 
 ### Remaining deployment actions
 
