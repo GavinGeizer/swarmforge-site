@@ -2,7 +2,7 @@
 
 ## Scope
 
-Independent repository at /home/overlord/swarmforge-site. Cloudflare Pages builds Astro and deploys only dist/. The application repository remains GavinGeizer/swarmforge-oss; GitHub Releases hold versioned binaries. No real SwarmForge/provider/model endpoint calls, no service restarts, and no secret material in the site.
+Independent repository at /home/overlord/swarmforge-site. Cloudflare builds Astro and deploys only dist/; both Pages and Workers Builds settings are documented. The application repository remains GavinGeizer/swarmforge-oss; GitHub Releases hold versioned binaries. No real SwarmForge/provider/model endpoint calls, no service restarts, and no secret material in the site.
 
 ## Design
 
@@ -43,8 +43,8 @@ The first binary release has been prepared as a draft: https://github.com/GavinG
 ### Remaining deployment actions
 
 1. Review and explicitly publish the draft binary release. Public installation needs a stable published release; draft assets are not available to unauthenticated users.
-2. Connect Cloudflare Pages to GavinGeizer/swarmforge-site, production branch main, framework Astro, build command npm run build, output directory dist, Node version 24.
-3. Attach getswarmforge.tech through the Pages project's Custom domains and complete HTTPS provisioning.
+2. Connect Cloudflare to GavinGeizer/swarmforge-site, production branch main, root directory ., Node 24. For the Workers Builds screen: build npm run build, deploy npm run deploy, preview npm run deploy:preview. For Pages: framework Astro, build npm run build, output dist.
+3. Attach getswarmforge.tech through the selected Worker/Pages project domain settings and complete HTTPS provisioning.
 4. Confirm the public script response and install flow before promoting the curl command. The installer was reviewed and syntax-checked, but was not executed end-to-end against a public release.
 
 No provider/model endpoint was contacted and no running service was restarted. Earlier application working-tree skill/research edits remain preserved.
@@ -60,3 +60,10 @@ No provider/model endpoint was contacted and no running service was restarted. E
 - GitHub publication is complete. Cloudflare account connection and public binary release publication remain owner actions described above.
 
 - Framework review: no important issue in deployment settings, route output, CSP or copied installer. Reviewer found the documented Node minimum did not cover a locked dependency's newer minimum; the project now explicitly requires Node 24, matching CI/Cloudflare. The 404 header's workflow link now returns to the homepage section.
+
+## Workers build commands — requested by user
+
+- Added pinned Wrangler 4.148.0 and a static-assets wrangler.jsonc for Worker swarmforge-site.
+- Production deploy script: wrangler deploy; preview deploy script: wrangler versions upload. Local Astro preview remains a separate npm script.
+- Inspected current official Cloudflare build docs and the installed Wrangler command help. A local Wrangler deploy dry run successfully discovered the generated assets without upload or authentication. No actual Cloudflare deployment or preview upload was performed.
+- Documented Worker name matching, build/deploy/preview fields, authentication, and the version URL behavior. Added an offline deployment dry-run step to website CI.

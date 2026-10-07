@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-24.04
     env:
       ASTRO_TELEMETRY_DISABLED: '1'
+      WRANGLER_SEND_METRICS: 'false'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -26,3 +27,5 @@ jobs:
         run: |
           cmp public/install dist/install
           cmp public/_headers dist/_headers
+      - name: Validate static Worker deployment without uploading
+        run: npm run deploy -- --dry-run

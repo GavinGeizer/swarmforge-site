@@ -6,3 +6,5 @@ node_modules/
 .firecrawl/
 dist/
 .astro/
+
+.wrangler/

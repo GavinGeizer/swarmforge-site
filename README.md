@@ -10,6 +10,7 @@ Independent Astro website for https://getswarmforge.tech. Application source and
 - `src/layouts/` and `src/components/`: shared page shell, navigation, footer, installer command and dashboard example.
 - `src/styles/site.css`: shared stylesheet, emitted as an external build asset to respect the site CSP.
 - `public/assets/`: clipboard enhancement and favicon. No external fonts or browser analytics.
+- `wrangler.jsonc`: static-assets deployment configuration for Workers Builds.
 - `astro.config.mjs`: Astro 7.3.6 static output, canonical domain and trailing slashes. No server-side adapter or Cloudflare Functions is needed for this site.
 - `package-lock.json`: pinned dependency tree; Node 24 selected for CI/Cloudflare builds.
 - `public/_headers`: script content type/cache policy and site security headers for Cloudflare Pages.
@@ -33,6 +34,27 @@ npm run preview
 ```
 
 Astro generates `dist/`; do not edit or commit the generated directory. Pages builds from source on each production deployment. `public/install` and `public/_headers` are copied byte-for-byte into `dist/`. Local Astro preview does not apply Cloudflare `_headers`; Pages applies them after deployment.
+
+## Cloudflare Workers Builds (deploy/preview command screen)
+
+If Cloudflare asks for a Deploy command and Preview command, use the Workers Builds configuration included in this repo:
+
+| Setting | Value |
+| --- | --- |
+| Worker name | `swarmforge-site` (must match `name` in `wrangler.jsonc`) |
+| Repository | `GavinGeizer/swarmforge-site` |
+| Production branch | `main` |
+| Root directory | Repository root / `.` |
+| Build command | `npm run build` |
+| Deploy command | `npm run deploy` |
+| Preview command | `npm run deploy:preview` |
+| Node version | `24` |
+
+`deploy` runs pinned Wrangler's `wrangler deploy`. `deploy:preview` runs `wrangler versions upload`, creating a version/preview URL without promoting it to production. This is Cloudflare's documented alternative to branch-isolated Previews and suits this static site, which has no runtime resource bindings. `npm run preview` remains the local Astro server; do not use it as the cloud preview deploy command.
+
+`wrangler.jsonc` points static assets at `dist`, enables preview URLs, and serves the generated custom 404. The installer and `_headers` stay in those static assets. No Astro server adapter is needed. Cloudflare supplies build authentication through the repository connection; no token belongs in Git. Match the Worker name to the config, then attach the domain through that Worker's domain settings after its first production deployment.
+
+Official command behavior: https://developers.cloudflare.com/workers/ci-cd/builds/configuration/ .
 
 ## Cloudflare Pages settings
 
