@@ -100,14 +100,14 @@ The application repo is not deployed by Pages. This folder contains no deploymen
 
 The archive contains exactly three regular files: `swarmforge`, `SHA256SUMS` (binary checksum), and `metadata-VERSION.json`. It is validated before extraction; executable checksum and reported version are checked before atomic installation.
 
-At implementation start there are no GitHub releases. A draft release must be reviewed and published before the public installation succeeds. The installer reports this condition without replacing an executable. SHA-256 checks detect corruption, not independent publisher authenticity; signature verification is not currently implemented.
+A published stable release is required for public installation. Draft releases cannot be downloaded by the public installer. The installer reports this condition without replacing an executable. SHA-256 checks detect corruption, not independent publisher authenticity; signature verification is not currently implemented.
 
 ## Installer behavior
 
 ```bash
 curl -fsSL https://getswarmforge.tech/install | bash
 curl -fsSL https://getswarmforge.tech/install | bash -s -- --install-only
-curl -fsSL https://getswarmforge.tech/install | bash -s -- --version 0.1.0 --install-only
+curl -fsSL https://getswarmforge.tech/install | bash -s -- --version 0.1.1 --install-only
 curl -fsSL https://getswarmforge.tech/install | bash -s -- --no-modify-path
 ```
 
@@ -121,7 +121,7 @@ Push site changes to `main`; Cloudflare Pages deploys independently from applica
 
 ## Current publication status
 
-The Astro site is published at https://github.com/GavinGeizer/swarmforge-site and its build/syntax CI passes. The first application binary release is prepared as a draft for owner review; it must be published before the installer can download it. Cloudflare Pages account connection, domain attachment and HTTPS provisioning remain to be completed using the settings above. See PLAN.md for the release link and deployment checklist.
+The website source is published at https://github.com/GavinGeizer/swarmforge-site and the public site is live at https://getswarmforge.tech. Application binaries are distributed through stable GitHub Releases; drafts cannot be downloaded by the public installer. See the application Releases page for current availability and `docs/SEARCH-SETUP.md` for owner-managed search verification and sitemap submission.
 
 ## Framework support
 

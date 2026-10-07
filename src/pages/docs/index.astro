@@ -21,7 +21,7 @@ bash install.sh</code></pre><h3>Options for existing deployments and automation<
 curl -fsSL https://getswarmforge.tech/install | bash -s -- --install-only
 
 # Install a specific published release
-curl -fsSL https://getswarmforge.tech/install | bash -s -- --version 0.1.0 --install-only
+curl -fsSL https://getswarmforge.tech/install | bash -s -- --version 0.1.1 --install-only
 
 # Leave shell profiles unchanged
 curl -fsSL https://getswarmforge.tech/install | bash -s -- --no-modify-path</code></pre><p><code>SWARMFORGE_INSTALL_DIR</code> accepts an absolute installation directory. The installer can add an idempotent PATH line for Bash, Zsh, or Fish, and prints instructions for other shells. Open a new terminal afterward. In an editor, reload the workspace and open a new terminal.</p><p>SHA-256 checks detect corruption; the installer currently does not verify a publisher signature. All release assets are fetched over HTTPS from the application's GitHub repository.</p>
