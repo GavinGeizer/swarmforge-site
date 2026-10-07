@@ -4,16 +4,16 @@ import DashboardExample from "../components/DashboardExample.astro";
 import InstallCommand from "../components/InstallCommand.astro";
 ---
 <SiteLayout
-  title="SwarmForge — Give every agent a workspace."
-  description="Coordinate coding agents in isolated virtual machines. Track their work, preserve their outputs, and bring results back to your project."
+  title="SwarmForge | Multi-Agent AI Coding Orchestration"
+  description="Orchestrate parallel AI coding agents with SwarmForge. Run isolated OpenCode workers, coordinate tasks through MCP, and preserve results and artifacts."
   copyControls
 >
   <main id="main">
     <section class="hero wrap">
       <div class="hero-copy">
-        <p class="eyebrow"><span class="live-dot" aria-hidden="true"></span> OPEN SOURCE AGENT INFRASTRUCTURE</p>
+        <p class="eyebrow"><span class="live-dot" aria-hidden="true"></span> PUBLIC SOURCE / AGENT INFRASTRUCTURE</p>
         <h1>Give every agent<br>a workspace.<br><span>Keep the whole<br>team in view.</span></h1>
-        <p class="intro">Run coding agents in isolated virtual machines. Coordinate their tasks, see their progress, and bring the results back to your project.</p>
+        <p class="intro">SwarmForge orchestrates autonomous AI coding agents across parallel workers, isolated virtual machines, and long-running tasks. Coordinate OpenCode sessions through MCP, see their progress, and preserve their deliverables.</p>
         <div class="hero-actions"><a class="button" href="/docs/#install">Get started <span aria-hidden="true">→</span></a><a class="text-link" href="https://github.com/GavinGeizer/swarmforge-oss">Explore the source <span aria-hidden="true">↗</span></a></div>
         <p class="small muted">Self-hosted control plane · Linux x64 · MCP interface</p>
       </div>
@@ -24,7 +24,7 @@ import InstallCommand from "../components/InstallCommand.astro";
       <InstallCommand />
     </section>
     <section class="section wrap" id="how-it-works" aria-labelledby="workflow-heading">
-      <div class="section-heading"><p class="eyebrow">FROM ASSIGNMENT TO HANDOFF</p><h2 id="workflow-heading">A clear path through<br>parallel work.</h2><p>Agents get room to work. You get the controls to understand what happened.</p></div>
+      <div class="section-heading"><p class="eyebrow">FROM ASSIGNMENT TO HANDOFF</p><h2 id="workflow-heading">A clear path through<br>parallel work.</h2><p>SwarmForge coordinates multiple coding workers concurrently. Your MCP manager assigns tasks; OpenCode executes them in Freestyle VMs.</p></div>
       <div class="steps-grid">
         <article class="step"><span class="step-number">01 / ASSIGN</span><h3>Give the task a home.</h3><p>Queue a worker through MCP with its task, instructions, timeout, and expected deliverables. Each worker runs in an isolated VM.</p></article>
         <article class="step"><span class="step-number">02 / OBSERVE</span><h3>See work as it moves.</h3><p>Inspect response activity, results, reported test outcomes, and measured token usage. Find workers with dashboard search and filters.</p></article>
@@ -40,6 +40,7 @@ import InstallCommand from "../components/InstallCommand.astro";
         <article><span aria-hidden="true">↻</span><div><h3>Recovery with context</h3><p>Inspect failure guidance and preservation state, then choose the appropriate next action.</p></div></article>
       </div>
     </div></section>
+    <section class="section wrap" aria-labelledby="learn-heading"><div class="section-heading"><p class="eyebrow">UNDERSTAND THE SYSTEM</p><h2 id="learn-heading">Parallel agents.<br>Explicit responsibilities.</h2><p>SwarmForge manages environments, task state and durable handoffs. Your manager decomposes the job, reviews evidence and integrates source changes.</p></div><div class="steps-grid"><article class="step"><h3>Explore the architecture</h3><p>Follow the path from MCP assignment to isolated OpenCode workers, SQLite state and preserved results.</p><a class="text-link" href="/architecture/">SwarmForge system architecture →</a></article><article class="step"><h3>Choose a workflow</h3><p>See concrete ways to divide implementation, repository review and documentation into bounded tasks.</p><a class="text-link" href="/use-cases/">Parallel coding workflows →</a></article><article class="step"><h3>Check the requirements</h3><p>The coordinator is self-hosted. Current workers require Freestyle VMs and an OpenAI-compatible tool-calling model.</p><a class="text-link" href="/faq/">Compatibility and infrastructure FAQ →</a></article></div></section>
     <section class="section wrap closing"><p class="eyebrow">BUILD IN THE OPEN</p><h2>Your next agent team<br>starts with a task.</h2><p>Explore the code, try a real workflow, and help shape what comes next.</p><div class="hero-actions"><a class="button" href="/docs/">Set up SwarmForge <span aria-hidden="true">→</span></a><a class="text-link" href="https://github.com/GavinGeizer/swarmforge-oss/issues">Share feedback <span aria-hidden="true">↗</span></a></div></section>
   </main>
 </SiteLayout>

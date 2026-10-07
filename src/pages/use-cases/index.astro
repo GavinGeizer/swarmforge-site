@@ -1,0 +1,13 @@
+---
+import { publishedGuides } from "../../lib/guides";
+import SiteLayout from "../../layouts/SiteLayout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+const guides = (await publishedGuides()).filter(entry => entry.data.section === "use-cases");
+const breadcrumbs = [{ name: "Home", path: "/" }, { name: "Use cases", path: "/use-cases/" }];
+---
+<SiteLayout title="SwarmForge use cases | Parallel coding and repository review" description="Practical workflows for parallel development and repository review using isolated SwarmForge workers, explicit deliverables and manager review." active="docs" breadcrumbs={breadcrumbs}>
+  <main class="docs-content section wrap" id="main"><Breadcrumbs items={breadcrumbs} /><h1>Coding workflows with SwarmForge</h1><p>SwarmForge coordinates independent coding, review and documentation workers concurrently. These workflows explain how to assign bounded tasks, collect results and review handoffs; they are examples, not measured speedup claims.</p>
+    {guides.map(entry => <section><h2><a href={`/${entry.id}/`}>{entry.data.title}</a></h2><p>{entry.data.description}</p></section>)}
+    <h2>Choose a suitable workflow</h2><p>Parallel workers are useful when work can proceed independently and deliverables can be reviewed separately. Sequence tasks with shared dependencies, check the repository handoff, and include VM startup and review time when assessing the outcome.</p><p>Start with the <a href="/docs/">setup guide</a> and <a href="/docs/tasks/">task model</a>. See the <a href="/benchmarks/">benchmark methodology</a> for evaluating results on your workload.</p>
+  </main>
+</SiteLayout>

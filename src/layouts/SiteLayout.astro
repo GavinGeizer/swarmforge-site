@@ -1,6 +1,7 @@
 ---
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
+import { site, canonicalUrl, applicationSchema, websiteSchema, serializeSchema, type Breadcrumb } from "../lib/site";
 import "../styles/site.css";
 
 interface Props {
@@ -9,9 +10,20 @@ interface Props {
   active?: "home" | "docs";
   copyControls?: boolean;
   noindex?: boolean;
+  breadcrumbs?: Breadcrumb[];
+  schema?: Record<string, unknown>[];
 }
-const { title, description, active = "home", copyControls = false, noindex = false } = Astro.props;
-const canonical = new URL(Astro.url.pathname, Astro.site ?? "https://getswarmforge.tech");
+const { title, description, active = "home", copyControls = false, noindex = false, breadcrumbs = [], schema = [] } = Astro.props;
+const canonical = canonicalUrl(Astro.url.pathname);
+const graph = [websiteSchema, ...(Astro.url.pathname === "/" ? [applicationSchema] : []), {
+  "@type": "WebPage", "@id": `${canonical}#page`, url: canonical, name: title,
+  description, inLanguage: "en", isPartOf: { "@id": websiteSchema["@id"] },
+  about: { "@id": applicationSchema["@id"] },
+}, ...(breadcrumbs.length ? [{
+  "@type": "BreadcrumbList", itemListElement: breadcrumbs.map((item, index) => ({
+    "@type": "ListItem", position: index + 1, name: item.name, item: canonicalUrl(item.path),
+  })),
+}] : []), ...schema];
 ---
 <!doctype html>
 <html lang="en">
@@ -21,12 +33,23 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? "https://getswarmfor
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="theme-color" content="#f5f4ef" />
+    <meta property="og:site_name" content={site.name} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
-    {noindex && <meta name="robots" content="noindex" />}
-    <link rel="canonical" href={canonical} />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content={canonicalUrl(site.image)} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={site.imageAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={canonicalUrl(site.image)} />
+    <meta name="twitter:image:alt" content={site.imageAlt} />
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
+    {!noindex && <script type="application/ld+json" is:inline set:html={serializeSchema({ "@context": "https://schema.org", "@graph": graph })} />}
     <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
     {copyControls && <script is:inline src="/assets/site.js" defer></script>}
   </head>

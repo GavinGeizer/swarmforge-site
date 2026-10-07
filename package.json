@@ -11,14 +11,20 @@
     "dev": "astro dev --host 127.0.0.1",
     "build": "astro build",
     "preview": "astro preview --host 127.0.0.1",
-    "check:syntax": "bash -n public/install && node --check public/assets/site.js",
+    "check:syntax": "bash -n public/install && node --check public/assets/site.js && node --check scripts/indexnow.mjs && node --check scripts/seo.test.mjs",
     "deploy": "wrangler deploy",
-    "deploy:preview": "wrangler versions upload"
+    "deploy:preview": "wrangler versions upload",
+    "check": "astro check",
+    "test": "node --test scripts/seo.test.mjs",
+    "indexnow": "node scripts/indexnow.mjs"
   },
   "dependencies": {
+    "@astrojs/sitemap": "3.7.4",
     "astro": "7.3.6"
   },
   "devDependencies": {
+    "@astrojs/check": "0.9.10",
+    "typescript": "5.9.3",
     "wrangler": "4.148.0"
   }
 }

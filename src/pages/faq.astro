@@ -1,0 +1,16 @@
+---
+import SiteLayout from "../layouts/SiteLayout.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import { faqs } from "../lib/faq";
+const breadcrumbs = [{ name: "Home", path: "/" }, { name: "FAQ", path: "/faq/" }];
+const schema = [{ "@type": "FAQPage", "@id": "https://getswarmforge.tech/faq/#faq", mainEntity: faqs.map(item => ({ "@type": "Question", name: item.question, acceptedAnswer: { "@type": "Answer", text: item.answer } })) }];
+---
+<SiteLayout title="SwarmForge FAQ | Parallel agents, OpenCode and VM requirements" description="Factual answers about SwarmForge agent orchestration, parallel workers, OpenCode, Freestyle, local VMs, repositories, costs and licensing." active="docs" breadcrumbs={breadcrumbs} schema={schema}>
+  <div class="docs-layout wrap">
+    <nav class="docs-nav" aria-label="On this page"><strong>COMMON QUESTIONS</strong><a href="#what-is-swarmforge">What is SwarmForge?</a><a href="#parallel-agents">Parallel agents</a><a href="#coding-agents">Coding agent compatibility</a><a href="#local-vms">Local VMs</a><a href="#license">License status</a></nav>
+    <main class="docs-content" id="main"><Breadcrumbs items={breadcrumbs} /><h1>SwarmForge FAQ</h1><p>Answers describe the current implementation, with worker execution, manager coordination and infrastructure requirements kept explicit.</p>
+      {faqs.map(item => <section aria-labelledby={item.id}><h2 id={item.id}>{item.question}</h2><p>{item.answer}</p></section>)}
+      <aside class="callout related-links"><h2>Explore the implementation</h2><p>Read the <a href="/docs/">setup guide</a>, <a href="/architecture/">system architecture</a>, <a href="/docs/providers/">provider requirements</a> and <a href="/benchmarks/">benchmark methodology</a>, or inspect the <a href="https://github.com/GavinGeizer/swarmforge-oss">source repository</a>.</p></aside>
+    </main>
+  </div>
+</SiteLayout>

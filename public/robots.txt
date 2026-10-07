@@ -1,3 +1,8 @@
+User-agent: OAI-SearchBot
+Allow: /
+
+# GPTBot retains the existing wildcard policy; search and training are separate.
 User-agent: *
 Allow: /
-Sitemap: https://getswarmforge.tech/sitemap.xml
+
+Sitemap: https://getswarmforge.tech/sitemap-index.xml

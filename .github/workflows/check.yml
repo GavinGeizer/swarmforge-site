@@ -21,8 +21,12 @@ jobs:
         run: npm ci --no-audit --no-fund
       - name: Installer and browser script syntax
         run: npm run check:syntax
+      - name: Astro type and template checks
+        run: npm run check
       - name: Build Astro site
         run: npm run build
+      - name: Verify SEO, links and structured content
+        run: npm test
       - name: Confirm public installer and headers are preserved
         run: |
           cmp public/install dist/install

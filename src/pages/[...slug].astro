@@ -1,0 +1,28 @@
+---
+import { render, type CollectionEntry } from "astro:content";
+import { publishedGuides } from "../lib/guides";
+import SiteLayout from "../layouts/SiteLayout.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import { canonicalUrl } from "../lib/site";
+export async function getStaticPaths() {
+  return (await publishedGuides()).map(entry => ({ params: { slug: entry.id }, props: { entry } }));
+}
+interface Props { entry: CollectionEntry<"guides">; }
+const { entry } = Astro.props;
+const { Content, headings } = await render(entry);
+const path = `/${entry.id}/`;
+const breadcrumbs = [{ name: "Home", path: "/" }, ...(entry.data.section === "docs" ? [{ name: "Docs", path: "/docs/" }] : entry.data.section === "use-cases" ? [{ name: "Use cases", path: "/use-cases/" }] : []), { name: entry.data.title, path }];
+const schema = [{ "@type": "TechArticle", "@id": `${canonicalUrl(path)}#article`, headline: entry.data.title, description: entry.data.description, url: canonicalUrl(path), inLanguage: "en", dateModified: entry.data.reviewed, mainEntityOfPage: { "@id": `${canonicalUrl(path)}#page` }, about: { "@id": `${canonicalUrl("/")}#software` } }];
+---
+<SiteLayout title={`${entry.data.title} | SwarmForge`} description={entry.data.description} active="docs" breadcrumbs={breadcrumbs} schema={schema}>
+  <div class="docs-layout wrap">
+    <nav class="docs-nav" aria-label="On this page"><strong>{entry.data.section.toUpperCase()}</strong>{headings.filter(h => h.depth === 2).map(h => <a href={`#${h.slug}`}>{h.text}</a>)}<a href="/docs/">Installation and setup</a><a href="/faq/">Common questions</a></nav>
+    <main class="docs-content" id="main">
+      <Breadcrumbs items={breadcrumbs} />
+      <h1>{entry.data.title}</h1>
+      <Content />
+      <aside class="callout related-links" aria-label="Related guides"><h2>Continue reading</h2><ul>{entry.data.related.map(item => <li><a href={item.path}>{item.title}</a></li>)}</ul></aside>
+      <footer><p>Reviewed <time datetime={entry.data.reviewed}>{entry.data.reviewed}</time>. Based on the current implementation; check release notes when upgrading.</p><p>Implementation references: {entry.data.sources.map((url, i) => <>{i > 0 && " · "}<a href={url}>{decodeURIComponent(url.split("/").at(-1) ?? "Source")}</a></>)}</p></footer>
+    </main>
+  </div>
+</SiteLayout>

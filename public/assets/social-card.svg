@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#f5f4ef"/>
+  <rect x="72" y="66" width="72" height="72" rx="16" fill="#1a2529"/>
+  <text x="108" y="113" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="28" font-weight="700" fill="#f5f4ef">SF</text>
+  <text x="166" y="115" font-family="DejaVu Sans, sans-serif" font-size="36" font-weight="700" fill="#1a2529">SwarmForge</text>
+  <text x="72" y="254" font-family="DejaVu Sans, sans-serif" font-size="62" font-weight="700" fill="#1a2529">Multi-agent AI</text>
+  <text x="72" y="335" font-family="DejaVu Sans, sans-serif" font-size="62" font-weight="700" fill="#255cdd">coding orchestration.</text>
+  <text x="72" y="425" font-family="DejaVu Sans, sans-serif" font-size="29" fill="#606d71">Isolated workers. Durable handoffs.</text>
+  <path d="M72 491H1128" stroke="#daddd6" stroke-width="2"/>
+  <text x="72" y="553" font-family="DejaVu Sans, sans-serif" font-size="24" fill="#606d71">getswarmforge.tech</text>
+  <text x="1128" y="553" text-anchor="end" font-family="DejaVu Sans, sans-serif" font-size="24" fill="#606d71">OpenCode · MCP · Freestyle</text>
+</svg>

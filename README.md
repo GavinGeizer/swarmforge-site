@@ -13,7 +13,14 @@ Independent Astro website for https://getswarmforge.tech. Application source and
 - `wrangler.jsonc`: static-assets deployment configuration for Workers Builds.
 - `astro.config.mjs`: Astro 7.3.6 static output, canonical domain and trailing slashes. No server-side adapter or Cloudflare Functions is needed for this site.
 - `package-lock.json`: pinned dependency tree; Node 24 selected for CI/Cloudflare builds.
-- `public/_headers`: script content type/cache policy and site security headers for Cloudflare Pages.
+- `public/_headers` and `_redirects`: content/security headers and the old sitemap redirect for Cloudflare static assets.
+- `src/content/guides/`: canonical Markdown concepts, architecture, practical workflows and benchmark methodology.
+- `src/lib/site.ts` and `src/layouts/SiteLayout.astro`: shared entity identity, metadata and truthful JSON-LD.
+- `src/lib/faq.ts`: FAQ answers shared by visible HTML and structured data.
+- `src/pages/llms*.txt.ts`: machine-readable navigation/reference generated from published content.
+- `docs/SEO-GEO.md`: initial audit, implementation inventory and validation.
+- `docs/SEARCH-SETUP.md`: owner steps for Search Console, Bing, crawler access and optional IndexNow.
+- `docs/CONTENT-GUIDE.md`: publishing future concepts, use cases, comparisons and original research.
 - `PLAN.md`: scope, implementation checklist and publication status.
 
 ## Local development and production build
@@ -29,9 +36,13 @@ Open the local URL printed by Astro (normally http://127.0.0.1:4321). For a prod
 
 ```bash
 npm run check:syntax
+npm run check
 npm run build
+npm test
 npm run preview
 ```
+
+Run check and build sequentially because they share Astro's generated content cache. There is no separate lint framework; syntax checks, Astro type/template checks and rendered-output tests run in CI.
 
 Astro generates `dist/`; do not edit or commit the generated directory. Pages builds from source on each production deployment. `public/install` and `public/_headers` are copied byte-for-byte into `dist/`. Local Astro preview does not apply Cloudflare `_headers`; Pages applies them after deployment.
 
@@ -115,3 +126,9 @@ The Astro site is published at https://github.com/GavinGeizer/swarmforge-site an
 ## Framework support
 
 Cloudflare documents Astro deployments with `npm run build` and `dist`: https://developers.cloudflare.com/pages/framework-guides/deploy-an-astro-site/ . This project prerenders its pages into static HTML; the installer is a public asset rather than an Astro route or server function. Astro's documented public directory behavior preserves these assets unchanged: https://docs.astro.build/en/basics/project-structure/#public .
+
+## Search, retrieval and content maintenance
+
+The site uses Astro's official sitemap integration: submit `/sitemap-index.xml`; `/sitemap.xml` redirects there. Error pages and non-HTML endpoints are omitted. Titles, descriptions, canonical URLs, Open Graph/social cards, breadcrumbs and JSON-LD come from the shared layout. Source is public, but there is no published application license yet; no SPDX license or licensed-open-source claim is fabricated.
+
+`/llms.txt` and `/llms-full.txt` are generated from the same published content, with current integration limits and benchmark status. They are supplementary navigation files, not an indexing guarantee. Follow [search setup](docs/SEARCH-SETUP.md) after deploying and [content maintenance](docs/CONTENT-GUIDE.md) when changing features or publishing evidence. IndexNow is optional, requires a build-time `INDEXNOW_KEY`, and never submits unless explicitly invoked with `--submit`.
